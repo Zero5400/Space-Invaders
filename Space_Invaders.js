@@ -19,7 +19,7 @@ function setup() {
     pos: createVector(width/2,height-100),
     health: 100,
     score: 0,
-    sprite: 2
+    sprite: 3
   }
   healthbar = new HealthBar(width-150,25,100,20,100)
   lasers = []
@@ -101,17 +101,23 @@ function mouseReleased() {
 function keyReleased() {
   if(keyCode == 32) {
     if (player.sprite == 0) {
-    lasers.push(new Laser(player.pos.x,player.pos.y,false))
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,'orange'))
     } else if (player.sprite == 1) {
-    lasers.push(new Laser(player.pos.x-10,player.pos.y,false))
-    lasers.push(new Laser(player.pos.x+10,player.pos.y,false))
+    lasers.push(new Laser(player.pos.x-10,player.pos.y,false,'#3FAAFA'))
+    lasers.push(new Laser(player.pos.x+10,player.pos.y,false,'#3FAAFA'))
     } else if (player.sprite == 2) {
-    lasers.push(new Laser(player.pos.x,player.pos.y-5,false))
-    lasers.push(new Laser(player.pos.x-5,player.pos.y,false))
-    lasers.push(new Laser(player.pos.x+a5,player.pos.y,false))
-    // Hi cohen
+    lasers.push(new Laser(player.pos.x,player.pos.y+20,false,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y-20,false,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y-40,false,'white'))
+    } else if (player.sprite == 3) {
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,'#9D0000'))
+    lasers.push(new Laser(player.pos.x-15,player.pos.y+25,false,'#9D0000'))
+    lasers.push(new Laser(player.pos.x+15,player.pos.y+25,false,'#9D0000'))
+    lasers.push(new Laser(player.pos.x,player.pos.y-20,false,'#9D0000'))
+    lasers.push(new Laser(player.pos.x-15,player.pos.y+5,false,'#9D0000'))
+    lasers.push(new Laser(player.pos.x+15,player.pos.y+5,false,'#9D0000'))
     }
-
   }
 }
 //enemy setup code

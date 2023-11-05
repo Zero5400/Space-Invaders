@@ -5,12 +5,10 @@ class Enemy {
     this.sprite = sprite;
   }
   shoot() {
-    lasers.push(new Laser(this.pos.x,this.pos.y,true))
+    lasers.push(new Laser(this.pos.x,this.pos.y,true,'red'))
   }
   display() {
-    fill('red')
     image(enemyships[0],this.pos.x-20,this.pos.y-20,40,40)
-    fill('white')
   }
   move() {
     this.pos.y += 0.1
