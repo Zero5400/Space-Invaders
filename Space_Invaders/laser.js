@@ -5,9 +5,10 @@ class Laser {
   }
   display() {
     strokeWeight(5)
-    stroke('rgb(0,204,0)')
-    square(this.pos.x,this.pos.y,4)
+    stroke('orange')
+    circle(this.pos.x,this.pos.y,2)
     stroke('black')
+    noStroke()
   }
   move() {
     if(this.enemy) {
