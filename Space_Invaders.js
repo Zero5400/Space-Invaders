@@ -23,7 +23,7 @@ function setup() {
     sprite: 0
   }
   healthbar = new HealthBar(width-150,25,100,20,100)
-  wave = 0
+  wave = 1
   wait = null
   lasers = []
   enemies = []
