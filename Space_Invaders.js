@@ -11,6 +11,7 @@ var playerships = []
 //var pship6;
 let font,
   fontsize = 40;
+  
 var enemyships = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -19,12 +20,14 @@ function setup() {
     pos: createVector(width/2,height-100),
     health: 100,
     score: 0,
-    sprite: 3
+    sprite: 2
   }
   healthbar = new HealthBar(width-150,25,100,20,100)
+  wave = 1
+  wait = null
   lasers = []
   enemies = []
-  generateEnemies(3,100)
+  generateEnemies(3,0,10);
 }
 function preload() {
   //loads the sprites and fonts
@@ -38,6 +41,16 @@ function preload() {
   enemyships.push(loadImage('assets/enemyship.png'));
 }
 function draw() {
+  if (enemies.length == 0) {
+    text("Wave "+wave,width/2,height/2);
+    wait = millis()
+    wave += 1
+    generateEnemies(3,wave*10)
+  }
+  if (wait+500 >= millis()) {
+    textAlign(CENTER)
+    text("Wave " + wave,width/2,height/2);
+  }
   textSize(fontsize);
   background(100,90)
   image(playerships[player.sprite],player.pos.x-20,player.pos.y,40,40)
@@ -46,7 +59,7 @@ function draw() {
     lasers[i].display()
     lasers[i].move()
     if (p5.Vector.sub(lasers[i].pos, player.pos).mag() <= 20 && lasers[i].enemy) { 
-      player.health -=10;
+      player.health -=lasers[i].damage;
       lasers.splice(i,1);
       i-=1
     }
@@ -56,17 +69,21 @@ function draw() {
   for(let i = 0; i < enemies.length; i++) {
     enemies[i].display()
     enemies[i].move()
-    var shoot = int(random(300));
+    var shoot = int(random(300))/wave;
     if(shoot == 1) {
       enemies[i].shoot()
     }
     for(let g = 0; g<lasers.length;g++) {
      if(lasers[g].enemy == false) {
        if (p5.Vector.sub(lasers[g].pos, enemies[i].pos).mag() <= 20) {
-         enemies.splice(i,1)
-         i -= 1
-         lasers.splice(g,1)
-         player.score += 1;
+         if(lasers[g].damage >= enemies[i].health) {
+           enemies.splice(i,1)
+           i -= 1
+           player.score += 1;
+         } else {
+           enemies[i].health -= lasers[g].damage
+         }
+         lasers.splice(g,1);
          break;
        }
      }
@@ -101,35 +118,40 @@ function mouseReleased() {
 function keyReleased() {
   if(keyCode == 32) {
     if (player.sprite == 0) {
-    lasers.push(new Laser(player.pos.x,player.pos.y,false,'orange'))
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,10,'orange'))
     } else if (player.sprite == 1) {
-    lasers.push(new Laser(player.pos.x-10,player.pos.y,false,'#3FAAFA'))
-    lasers.push(new Laser(player.pos.x+10,player.pos.y,false,'#3FAAFA'))
+    lasers.push(new Laser(player.pos.x-10,player.pos.y,false,10,'#3FAAFA'))
+    lasers.push(new Laser(player.pos.x+10,player.pos.y,false, 10,'#3FAAFA'))
     } else if (player.sprite == 2) {
-    lasers.push(new Laser(player.pos.x,player.pos.y+20,false,'white'))
-    lasers.push(new Laser(player.pos.x,player.pos.y,false,'white'))
-    lasers.push(new Laser(player.pos.x,player.pos.y-20,false,'white'))
-    lasers.push(new Laser(player.pos.x,player.pos.y-40,false,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y+20,false,10,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,10,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y-20,false,10,'white'))
+    lasers.push(new Laser(player.pos.x,player.pos.y-40,false,10,'white'))
     } else if (player.sprite == 3) {
-    lasers.push(new Laser(player.pos.x,player.pos.y,false,'#9D0000'))
-    lasers.push(new Laser(player.pos.x-15,player.pos.y+25,false,'#9D0000'))
-    lasers.push(new Laser(player.pos.x+15,player.pos.y+25,false,'#9D0000'))
-    lasers.push(new Laser(player.pos.x,player.pos.y-20,false,'#9D0000'))
-    lasers.push(new Laser(player.pos.x-15,player.pos.y+5,false,'#9D0000'))
-    lasers.push(new Laser(player.pos.x+15,player.pos.y+5,false,'#9D0000'))
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,50,'#9D0000'))
+    lasers.push(new Laser(player.pos.x-15,player.pos.y+25,false,50,'#9D0000'))
+    lasers.push(new Laser(player.pos.x+15,player.pos.y+25,false,50,'#9D0000'))
+    } else if (player.sprite == 4) {
+    lasers.push(new Laser(player.pos.x,player.pos.y,false,60,'#00E333'))
+    lasers.push(new Laser(player.pos.x-5,player.pos.y+2,false,60,'#00E333'))
+    lasers.push(new Laser(player.pos.x+5,player.pos.y+2,false,60,'#00E333'))
+
+
+    } else if (player.sprite == 5) {
+      lasers.push(new Laser(player.pos.x,player.pos.y,false,100,'#00E333'))
     }
   }
 }
 //enemy setup code
-function generateEnemyRow(count,y) {
+function generateEnemyRow(count,y,health) {
   var x = width/(count*2)
     for(var i = 0; i< count; i++) {
-      enemies.push(new Enemy(x,y))
+      enemies.push(new Enemy(x,y,health))
       x += width/count
     }
 }
-function generateEnemies(rows) {
+function generateEnemies(rows,y,health) {
     for(var i = 0; i< rows; i++) {
-      generateEnemyRow(15,50*i)
+      generateEnemyRow(15,y+50*i,health)
     }
 }

@@ -1,8 +1,9 @@
 class Laser {
-  constructor(x,y,enemy, color) {
+  constructor(x,y,enemy, damage,color) {
     this.pos = createVector(x,y);
     this.enemy = enemy;
     this.color = color;
+    this.damage = damage
   }
   display() {
     strokeWeight(5)
