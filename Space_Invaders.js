@@ -20,14 +20,14 @@ function setup() {
     pos: createVector(width/2,height-100),
     health: 100,
     score: 0,
-    sprite: 2
+    sprite: 0
   }
   healthbar = new HealthBar(width-150,25,100,20,100)
-  wave = 1
+  wave = 0
   wait = null
   lasers = []
   enemies = []
-  generateEnemies(3,0,10);
+  generateEnemies(3,0,10,0);
 }
 function preload() {
   //loads the sprites and fonts
@@ -39,18 +39,32 @@ function preload() {
   playerships.push(loadImage('assets/playership5.png'));
   playerships.push(loadImage('assets/playership6.png'));
   enemyships.push(loadImage('assets/enemyship.png'));
+  enemyships.push(loadImage('assets/enemyship2.png'));
 }
 function draw() {
   if (enemies.length == 0) {
     text("Wave "+wave,width/2,height/2);
-    wait = millis()
     wave += 1
-    generateEnemies(3,wave*10)
+    if(wave == 3 || wave == 6) {
+    player.sprite+=1
+    text("New Ship Unlocked!",width/2,height/2+50);
+    }
+    wait = millis()
+    generateEnemies(3, 0,wave*10,0)
+    if(wave < 7) {
+      generateEnemies(wave,wave*-50,wave*20,1)
+    } else {
+      generateEnemies(3,-150,60,1)
+    }
   }
   if (wait+500 >= millis()) {
-    textAlign(CENTER)
+    textAlign(CENTER);
     text("Wave " + wave,width/2,height/2);
+   if(wave == 3 || wave == 6) {
+      text("New Ship Unlocked!",width/2,height/2+50);
+   }
   }
+
   textSize(fontsize);
   background(100,90)
   image(playerships[player.sprite],player.pos.x-20,player.pos.y,40,40)
@@ -143,15 +157,15 @@ function keyReleased() {
   }
 }
 //enemy setup code
-function generateEnemyRow(count,y,health) {
+function generateEnemyRow(count,y,health,sprite) {
   var x = width/(count*2)
     for(var i = 0; i< count; i++) {
-      enemies.push(new Enemy(x,y,health))
+      enemies.push(new Enemy(x,y,health,sprite))
       x += width/count
     }
 }
-function generateEnemies(rows,y,health) {
+function generateEnemies(rows,y,health,sprite) {
     for(var i = 0; i< rows; i++) {
-      generateEnemyRow(15,y+50*i,health)
+      generateEnemyRow(15,y+50*i,health,sprite)
     }
 }
