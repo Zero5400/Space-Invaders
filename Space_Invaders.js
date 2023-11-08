@@ -23,11 +23,11 @@ function setup() {
     sprite: 0
   }
   healthbar = new HealthBar(width-150,25,100,20,100)
-  wave = 1
+  wave = 4
   wait = null
   lasers = []
   enemies = []
-  generateEnemies(3,0,10,0);
+  //generateEnemies(3,0,10,0);
 }
 function preload() {
   //loads the sprites and fonts
@@ -50,10 +50,11 @@ function draw() {
     text("New Ship Unlocked!",width/2,height/2+50);
     }
     wait = millis()
-    generateEnemies(3, 0,wave*10,0)
-    if(wave < 7) {
+    if(wave < 4) {
+      generateEnemies(3, 0,wave*10,0)
       generateEnemies(wave,wave*-50,wave*20,1)
     } else {
+      generateEnemies(3, 100,wave*10,0)
       generateEnemies(3,-150,60,1)
     }
   }
