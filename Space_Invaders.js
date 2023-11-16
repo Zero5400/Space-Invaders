@@ -22,11 +22,14 @@ function setup() {
     score: 0,
     sprite: 0
   }
+  game = 1
   healthbar = new HealthBar(width-150,25,100,20,100)
-  wave = 4
+  wave = 3
   wait = null
   lasers = []
   enemies = []
+  framerate = 40
+  frameRate(framerate)
   //generateEnemies(3,0,10,0);
 }
 function preload() {
@@ -40,13 +43,19 @@ function preload() {
   playerships.push(loadImage('assets/playership6.png'));
   enemyships.push(loadImage('assets/enemyship.png'));
   enemyships.push(loadImage('assets/enemyship2.png'));
+  enemyships.push(loadImage('assets/enemyship3.png'));
 }
 function draw() {
+  if(player.health<1) {
+    game = 0
+  }
+  if (game == 1) {
   if (enemies.length == 0) {
     text("Wave "+wave,width/2,height/2);
     wave += 1
     if(wave == 3 || wave == 6) {
     player.sprite+=1
+    player.health = 100
     text("New Ship Unlocked!",width/2,height/2+50);
     }
     wait = millis()
@@ -54,8 +63,9 @@ function draw() {
       generateEnemies(3, 0,wave*10,0)
       generateEnemies(wave,wave*-50,wave*20,1)
     } else {
-      generateEnemies(3, 100,wave*10,0)
-      generateEnemies(3,-150,60,1)
+      generateEnemies(3, 100,40,0)
+      generateEnemies(2,0,60,1)
+      generateEnemyRow(1,-50,2*wave,2)
     }
   }
   if (wait+500 >= millis()) {
@@ -118,6 +128,13 @@ function draw() {
   fill('black')
   noStroke()
   text(player.score, 50,50)
+} else {
+  background('black')
+  fill('red')
+  textAlign(CENTER)
+  textSize(50)
+  text('Game Over',width/2,height/2)
+}
 }
 
 function mouseDragged() {
@@ -156,7 +173,18 @@ function keyReleased() {
       lasers.push(new Laser(player.pos.x,player.pos.y,false,100,'#00E333'))
     }
   }
-}
+  if (keyCode == 80) {
+    if (framerate == 40)  {
+      text("Game Paused", width/2,height/2)
+      framerate = 0
+    } else {
+      framerate = 40
+   }
+   frameRate(framerate)
+  }
+  console.log(keyCode)
+  }
+
 //enemy setup code
 function generateEnemyRow(count,y,health,sprite) {
   var x = width/(count*2)

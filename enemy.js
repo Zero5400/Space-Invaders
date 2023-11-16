@@ -1,4 +1,5 @@
 class Enemy {
+  xVelo = 10
   constructor(x,y,health,sprite) {
     this.pos = createVector(x,y)
     this.health = health;
@@ -16,5 +17,11 @@ class Enemy {
   }
   move() {
     this.pos.y += 0.1
+    if (this.sprite == 2)  {
+    this.pos.x += this.xVelo
+    if (this.pos.x <= 0|| this.pos.x >= width) {
+      this.xVelo *= -1
+    }
+  }
   }
 }
